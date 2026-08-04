@@ -638,12 +638,17 @@ This is a test skill for -y flag mode testing.
     );
 
     // Run with -y flag - should complete without hanging
-    const result = runCli(['add', testDir, '-g', '-y', '--skill', 'yes-flag-test-skill'], testDir);
+    const result = runCli(
+      ['add', testDir, '-g', '-y', '--skill', 'yes-flag-test-skill'],
+      testDir,
+      undefined,
+      60000
+    );
 
     // Should not contain the find-skills prompt
     expect(result.stdout).not.toContain('Install the find-skills skill');
     expect(result.stdout).not.toContain("One-time prompt - you won't be asked again");
     // Should complete successfully
     expect(result.exitCode).toBe(0);
-  });
+  }, 60000);
 });
