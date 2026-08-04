@@ -42,6 +42,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Set git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Bump version
         run: |
           npm version ${{ inputs.bump }} -m "v%s"
