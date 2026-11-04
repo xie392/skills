@@ -783,15 +783,11 @@ export const agents: Record<AgentType, AgentConfig> = {
 };
 
 /**
- * Agents shown in interactive selection prompts.
- * Includes mainstream international tools and domestic ones
- * (Baidu Comate, Tencent CodeBuddy, ByteDance Trae, Alibaba Lingma).
+ * Agents shown in interactive selection prompts (domestic tools only).
+ * Baidu Comate, Tencent CodeBuddy, ByteDance Trae, Alibaba Lingma.
  * The full registry is still used for non-interactive flags like --agent and '*'.
  */
 export const promptAgentAllowlist: AgentType[] = [
-  'claude-code',
-  'codex',
-  'cursor',
   'comate',
   'codebuddy',
   'trae',

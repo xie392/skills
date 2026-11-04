@@ -32,11 +32,11 @@ describe('promptForAgents', () => {
 
     await promptForAgents('Select agents', choices);
 
-    // Defaults are the prompt allowlist; filtered by available choices
-    // only claude-code and cursor match
+    // Defaults are the domestic-only prompt allowlist; none exist in these
+    // choices, so no initial selection applies
     expect(searchMultiselectModule.searchMultiselect).toHaveBeenCalledWith(
       expect.objectContaining({
-        initialSelected: ['claude-code', 'cursor'],
+        initialSelected: [],
       })
     );
   });
@@ -73,11 +73,11 @@ describe('promptForAgents', () => {
 
     await promptForAgents('Select agents', choices);
 
-    // When history is invalid, should fall back to defaults (prompt allowlist)
+    // When history is invalid, should fall back to defaults (domestic allowlist)
     // filtered by available choices
     expect(searchMultiselectModule.searchMultiselect).toHaveBeenCalledWith(
       expect.objectContaining({
-        initialSelected: ['claude-code', 'cursor'],
+        initialSelected: [],
       })
     );
   });
