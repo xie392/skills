@@ -1,6 +1,6 @@
 {
   "name": "company-skills",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "The open agent skills ecosystem (Comate/Chinese friendly CLI)",
   "type": "module",
   "bin": {
