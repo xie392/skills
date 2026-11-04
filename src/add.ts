@@ -24,6 +24,7 @@ import {
   getNonUniversalAgents,
   isUniversalAgent,
   getEveSubagents,
+  promptAgentAllowlist,
 } from './agents.ts';
 import {
   track,
@@ -438,7 +439,7 @@ export async function promptForAgents(
   const validAgents = choices.map((c) => c.value);
 
   // Default agents to pre-select when no valid history exists
-  const defaultAgents: AgentType[] = ['claude-code', 'opencode', 'codex'];
+  const defaultAgents: AgentType[] = [...promptAgentAllowlist];
   const defaultValues = defaultAgents.filter((a) => validAgents.includes(a));
 
   let initialValues: AgentType[] = [];
@@ -482,10 +483,15 @@ async function selectAgentsInteractive(options: {
   // Filter out agents that don't support global installation when --global is used
   const supportsGlobalFilter = (a: AgentType) => !options.global || agents[a].globalSkillsDir;
 
-  const universalAgents = getUniversalAgents().filter(supportsGlobalFilter);
-  const visibleUniversalAgents = getVisibleUniversalAgents().filter(supportsGlobalFilter);
+  const universalAgents = getUniversalAgents()
+    .filter((a) => promptAgentAllowlist.includes(a))
+    .filter(supportsGlobalFilter);
+  const visibleUniversalAgents = getVisibleUniversalAgents()
+    .filter((a) => promptAgentAllowlist.includes(a))
+    .filter(supportsGlobalFilter);
   const otherAgents = getNonUniversalAgents().filter(
-    (agent) => agent !== 'eve' && supportsGlobalFilter(agent)
+    (agent) =>
+      agent !== 'eve' && promptAgentAllowlist.includes(agent) && supportsGlobalFilter(agent)
   );
 
   // Universal agents shown as locked section
@@ -705,10 +711,12 @@ async function handleWellKnownSkills(
       } else {
         p.log.info(t('Select agents to install skills to'));
 
-        const allAgentChoices = Object.entries(agents).map(([key, config]) => ({
-          value: key as AgentType,
-          label: config.displayName,
-        }));
+        const allAgentChoices = Object.entries(agents)
+          .filter(([key]) => promptAgentAllowlist.includes(key as AgentType))
+          .map(([key, config]) => ({
+            value: key as AgentType,
+            label: config.displayName,
+          }));
 
         // Use helper to prompt with search
         const selected = await promptForAgents(
@@ -1468,7 +1476,7 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
           p.log.info(t('Select agents to install skills to'));
 
           const allAgentChoices = Object.entries(agents)
-            .filter(([key]) => key !== 'eve')
+            .filter(([key]) => promptAgentAllowlist.includes(key as AgentType) && key !== 'eve')
             .map(([key, config]) => ({
               value: key as AgentType,
               label: config.displayName,

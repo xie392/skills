@@ -782,6 +782,27 @@ export const agents: Record<AgentType, AgentConfig> = {
   },
 };
 
+/**
+ * Agents shown in interactive selection prompts.
+ * Includes mainstream international tools and domestic ones
+ * (Baidu Comate, Tencent CodeBuddy, ByteDance Trae, Alibaba Lingma).
+ * The full registry is still used for non-interactive flags like --agent and '*'.
+ */
+export const promptAgentAllowlist: AgentType[] = [
+  'claude-code',
+  'codex',
+  'cursor',
+  'comate',
+  'codebuddy',
+  'trae',
+  'trae-cn',
+  'lingma',
+];
+
+export function isInPromptAllowlist(type: AgentType): boolean {
+  return promptAgentAllowlist.includes(type);
+}
+
 export async function detectInstalledAgents(): Promise<AgentType[]> {
   const results = await Promise.all(
     Object.entries(agents).map(async ([type, config]) => ({
